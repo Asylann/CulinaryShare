@@ -1,0 +1,27 @@
+# Environment files
+.env
+*.env.local
+
+# Binary
+main
+main.exe
+*.exe
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+vendor/
+*.test
+coverage.out
+coverage.html
+
+# Logs
+*.log
