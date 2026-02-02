@@ -1,21 +1,23 @@
-# CulinaryShare Backend
+# CulinaryShare
 
-A recipe management backend built with Go, Gin framework, and MongoDB Atlas for the NoSQL Final Exam project.
+A full-stack recipe management web application built with Go, Gin framework, MongoDB Atlas, and vanilla HTML/CSS/JavaScript for the NoSQL Final Exam project.
 
 ## 👥 Team Information
 
 | Name | Student ID | Contribution |
 |------|------------|--------------|
-| Student 1 | [ID] | Auth, User handlers, JWT middleware, Tests |
-| Student 2 | [ID] | Recipe, Category, Analytics handlers, Documentation |
+| Student 1 | [ID] | Auth, User handlers, JWT middleware, Tests, Frontend Auth |
+| Student 2 | [ID] | Recipe, Category, Analytics handlers, Documentation, Frontend UI |
 
 ## 📋 Project Overview
 
-CulinaryShare is a RESTful API for managing recipes, ingredients, reviews, and users. It features:
-- JWT-based authentication with role-based access control (USER/ADMIN)
+CulinaryShare is a complete web application for managing recipes, ingredients, reviews, and users. It features:
+- **Backend**: RESTful API with JWT-based authentication and role-based access control (USER/ADMIN)
+- **Frontend**: Modern responsive UI with dark theme, glassmorphism, and smooth animations
+- **Database**: MongoDB with embedded and referenced documents, aggregation pipelines, and compound indexes
 - CRUD operations for recipes and categories
 - Embedded documents (ingredients, reviews) and referenced documents (userId, categoryId)
-- Aggregation pipelines for analytics
+- Multi-stage aggregation pipelines for analytics
 - Atomic rating updates
 
 ## 🏗️ Architecture
@@ -24,34 +26,63 @@ CulinaryShare is a RESTful API for managing recipes, ingredients, reviews, and u
 /cmd
   └── main.go           # Application entry point
 
-/config
-  └── config.go         # Environment configuration
+/internal
+  /config
+    └── config.go       # Environment configuration
+  
+  /database
+    └── mongo.go        # MongoDB connection + index creation
+  
+  /models
+    ├── user.go         # User model
+    ├── recipe.go       # Recipe model (with embedded Ingredient, Review)
+    └── category.go     # Category model
+  
+  /handlers
+    ├── auth.go         # Register, Login (bcrypt + JWT)
+    ├── user.go         # User profile
+    ├── recipe.go       # Recipe CRUD, ingredients, reviews
+    ├── category.go     # Category CRUD
+    └── analytics.go    # Aggregation pipelines
+  
+  /middleware
+    └── auth.go         # JWT validation + role checking
+  
+  /routes
+    └── routes.go       # API route definitions
 
-/database
-  └── mongo.go          # MongoDB connection + index creation
-
-/models
-  ├── user.go           # User model
-  ├── recipe.go         # Recipe model (with embedded Ingredient, Review)
-  └── category.go       # Category model
-
-/handlers
-  ├── auth.go           # Register, Login (bcrypt + JWT)
-  ├── user.go           # User profile
-  ├── recipe.go         # Recipe CRUD, ingredients, reviews
-  ├── category.go       # Category CRUD
-  └── analytics.go      # Aggregation pipelines
-
-/middleware
-  └── auth.go           # JWT validation + role checking
-
-/routes
-  └── routes.go         # API route definitions
+/frontend
+  ├── index.html        # Landing page with hero, top rated, categories
+  ├── login.html        # User login page
+  ├── register.html     # User registration page  
+  ├── recipes.html      # All recipes with filters and pagination
+  ├── recipe.html       # Recipe detail with reviews
+  ├── create-recipe.html # Create/edit recipe form
+  ├── categories.html   # Browse all categories
+  ├── profile.html      # User profile and settings
+  /css
+    └── styles.css      # Complete design system
+  /js
+    ├── api.js          # API client with auth management
+    └── utils.js        # Utility functions
 
 /utils
   ├── response.go       # Centralized error responses
   └── validation.go     # Input validation
 ```
+
+## 🎨 Frontend Pages (6 pages)
+
+| Page | Description | Features |
+|------|-------------|----------|
+| **index.html** | Landing page | Hero section, top rated recipes, categories preview, recent recipes |
+| **login.html** | Login page | Form validation, JWT token storage |
+| **register.html** | Registration page | Form validation, auto-login after registration |
+| **recipes.html** | All recipes | Search, category filter, sort, pagination |
+| **recipe.html** | Recipe details | Ingredients checklist, reviews, owner actions |
+| **create-recipe.html** | Create/Edit recipe | Dynamic ingredients, form validation |
+| **categories.html** | Categories | Grid view, admin can add categories |
+| **profile.html** | User profile | Stats, my recipes, settings |
 
 ## 📦 MongoDB Schema Design
 
@@ -171,20 +202,44 @@ cp .env.example .env
 go mod tidy
 ```
 
-### 4. Run the Application
+### 4. Run the Backend
 ```bash
 go run ./cmd/main.go
 ```
 
-### 5. Run Tests
+### 5. Run the Frontend
 ```bash
-go test ./handlers/... -v
+# Option 1: Using Python (recommended)
+cd frontend && python3 -m http.server 3000
+
+# Option 2: Using the serve script
+./frontend/serve.sh
+
+# Option 3: Using npx
+npx serve frontend
+
+# Option 4: Open directly in browser
+# Just open frontend/index.html in your browser
 ```
 
-### Using Docker
+The frontend will be available at: http://localhost:3000
+
+### 6. Run Tests
 ```bash
-docker-compose -f docker-compose.dev.yml up --build
+go test ./internal/handlers/... -v
 ```
+
+### Using Docker (Recommended - One Command!)
+```bash
+# Run the entire project (backend + frontend) with one command:
+docker-compose up --build
+```
+
+This will start:
+- **Backend API** at http://localhost:8080
+- **Frontend** at http://localhost:3000
+
+The frontend uses nginx to serve static files and proxy API requests to the backend.
 
 ## 🔌 Connecting to MongoDB Atlas
 

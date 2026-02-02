@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Browse recipe categories on CulinaryShare"
+    />
+    <title>Categories - CulinaryShare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .categories-page {
+        padding-top: 100px;
+        min-height: 100vh;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: var(--spacing-2xl);
+      }
+
+      .page-header p {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .categories-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+      }
+
+      .category-card-large {
+        background: var(--gradient-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        padding: var(--spacing-2xl);
+        text-align: center;
+        transition: all var(--transition-base);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .category-card-large::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+      }
+
+      .category-card-large:hover {
+        transform: translateY(-8px);
+        border-color: var(--primary);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .category-card-large:hover::before {
+        opacity: 0.1;
+      }
+
+      .category-card-large > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .category-icon-large {
+        font-size: 4rem;
+        margin-bottom: var(--spacing-lg);
+        display: block;
+      }
+
+      .category-name-large {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .category-description {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .category-count-large {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+        background: var(--bg-elevated);
+        border-radius: var(--radius-full);
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+
+      .admin-section {
+        margin-top: var(--spacing-3xl);
+        padding-top: var(--spacing-2xl);
+        border-top: 1px solid var(--border-color);
+      }
+
+      .admin-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-xl);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .admin-title {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-lg);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-brand">
+          <span class="icon">CS</span>
+          <span>CulinaryShare</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="recipes.html">Recipes</a>
+          <a href="categories.html" class="active">Categories</a>
+        </div>
+
+        <div class="nav-auth" id="nav-auth">
+          <div id="auth-buttons">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="register.html" class="btn btn-primary">Get Started</a>
+          </div>
+          <div id="user-menu" class="hidden">
+            <a href="create-recipe.html" class="btn btn-primary btn-sm">
+              <span>+</span> New Recipe
+            </a>
+            <a href="profile.html" class="nav-user">
+              <div class="nav-user-avatar" id="user-avatar">U</div>
+              <span id="user-name">User</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="categories-page">
+      <div class="container">
+        <div class="page-header">
+          <h1>Recipe Categories</h1>
+          <p class="text-muted">
+            Explore recipes by category and find exactly what you're craving
+          </p>
+        </div>
+
+        <!-- Categories Grid -->
+        <div class="categories-container" id="categories-container">
+          <!-- Loading skeletons -->
+          <div class="category-card-large">
+            <div
+              class="skeleton"
+              style="
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                margin: 0 auto var(--spacing-lg);
+              "
+            ></div>
+            <div
+              class="skeleton"
+              style="height: 24px; width: 60%; margin: 0 auto var(--spacing-sm)"
+            ></div>
+            <div
+              class="skeleton"
+              style="height: 16px; width: 40%; margin: 0 auto"
+            ></div>
+          </div>
+          <div class="category-card-large">
+            <div
+              class="skeleton"
+              style="
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                margin: 0 auto var(--spacing-lg);
+              "
+            ></div>
+            <div
+              class="skeleton"
+              style="height: 24px; width: 60%; margin: 0 auto var(--spacing-sm)"
+            ></div>
+            <div
+              class="skeleton"
+              style="height: 16px; width: 40%; margin: 0 auto"
+            ></div>
+          </div>
+          <div class="category-card-large">
+            <div
+              class="skeleton"
+              style="
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                margin: 0 auto var(--spacing-lg);
+              "
+            ></div>
+            <div
+              class="skeleton"
+              style="height: 24px; width: 60%; margin: 0 auto var(--spacing-sm)"
+            ></div>
+            <div
+              class="skeleton"
+              style="height: 16px; width: 40%; margin: 0 auto"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Admin Section (only for admins) -->
+        <div class="admin-section hidden" id="admin-section">
+          <div class="admin-card">
+            <h3 class="admin-title">
+              <span></span>
+              <span>Admin: Add Category</span>
+            </h3>
+
+            <form id="category-form">
+              <div class="form-group">
+                <label class="form-label" for="category-name"
+                  >Category Name</label
+                >
+                <input
+                  type="text"
+                  id="category-name"
+                  class="form-input"
+                  placeholder="e.g., Desserts"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="category-description"
+                  >Description (optional)</label
+                >
+                <textarea
+                  id="category-description"
+                  class="form-input"
+                  placeholder="A short description of this category..."
+                  rows="2"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary"
+                id="add-category-btn"
+              >
+                Add Category
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2026 CulinaryShare. NoSQL Final Project.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+      // DOM Elements
+      const categoriesContainer = document.getElementById(
+        "categories-container",
+      );
+      const authButtons = document.getElementById("auth-buttons");
+      const userMenu = document.getElementById("user-menu");
+      const userAvatar = document.getElementById("user-avatar");
+      const userName = document.getElementById("user-name");
+      const adminSection = document.getElementById("admin-section");
+      const categoryForm = document.getElementById("category-form");
+
+      // Category descriptions
+      const categoryDescriptions = {
+        breakfast: "Start your day right with these morning favorites",
+        lunch: "Quick and satisfying midday meals",
+        dinner: "Hearty dishes for the end of the day",
+        dessert: "Sweet treats and indulgent finishes",
+        snack: "Quick bites for any time",
+        appetizer: "Perfect starters to any meal",
+        soup: "Warm and comforting bowls",
+        salad: "Fresh and healthy options",
+        pasta: "Italian-inspired comfort food",
+        seafood: "Fresh from the ocean",
+        vegetarian: "Meat-free delights",
+        vegan: "Plant-based goodness",
+        drink: "Refreshing beverages",
+        default: "Delicious recipes awaiting you",
+      };
+
+      // Update auth UI
+      function updateAuthUI() {
+        if (TokenManager.isLoggedIn()) {
+          const user = TokenManager.getUser();
+          authButtons.classList.add("hidden");
+          userMenu.classList.remove("hidden");
+          userAvatar.textContent = getInitials(user?.username || "U");
+          userName.textContent = user?.username || "User";
+
+          // Show admin section for admins
+          if (user?.role === "ADMIN") {
+            adminSection.classList.remove("hidden");
+          }
+        }
+      }
+
+      // Get category description
+      function getCategoryDescription(name) {
+        const key = name.toLowerCase();
+        return categoryDescriptions[key] || categoryDescriptions.default;
+      }
+
+      // Create category card
+      function createCategoryCard(category) {
+        return `
+        <a href="recipes.html?category=${category.id}" class="category-card-large">
+          <span class="category-icon-large">${getCategoryIcon(category.name)}</span>
+          <h3 class="category-name-large">${category.name}</h3>
+          <p class="category-description">${getCategoryDescription(category.name)}</p>
+          <span class="category-count-large">
+            <span></span>
+            <span>${category.recipeCount || 0} recipes</span>
+          </span>
+        </a>
+      `;
+      }
+
+      // Load categories
+      async function loadCategories() {
+        try {
+          const response = await CategoriesAPI.getAll();
+          const categories = response.data || [];
+
+          if (categories.length > 0) {
+            categoriesContainer.innerHTML = categories
+              .map(createCategoryCard)
+              .join("");
+          } else {
+            // Show default categories if none exist
+            const defaultCategories = [
+              { id: "1", name: "Breakfast", recipeCount: 0 },
+              { id: "2", name: "Lunch", recipeCount: 0 },
+              { id: "3", name: "Dinner", recipeCount: 0 },
+              { id: "4", name: "Dessert", recipeCount: 0 },
+              { id: "5", name: "Snack", recipeCount: 0 },
+              { id: "6", name: "Vegetarian", recipeCount: 0 },
+              { id: "7", name: "Pasta", recipeCount: 0 },
+              { id: "8", name: "Seafood", recipeCount: 0 },
+              { id: "9", name: "Soup", recipeCount: 0 },
+            ];
+            categoriesContainer.innerHTML = defaultCategories
+              .map(createCategoryCard)
+              .join("");
+          }
+        } catch (error) {
+          console.error("Failed to load categories:", error);
+          categoriesContainer.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-state-icon">!</div>
+            <h3>Failed to load categories</h3>
+            <p>Please check if the backend is running.</p>
+          </div>
+        `;
+        }
+      }
+
+      // Add category (Admin only)
+      categoryForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("category-name").value.trim();
+        const description = document
+          .getElementById("category-description")
+          .value.trim();
+
+        if (!name) {
+          showNotification("Please enter a category name", "error");
+          return;
+        }
+
+        const addBtn = document.getElementById("add-category-btn");
+        setButtonLoading(addBtn, true);
+
+        try {
+          await CategoriesAPI.create({ name, description });
+          showNotification("Category added successfully!", "success");
+          categoryForm.reset();
+          loadCategories();
+        } catch (error) {
+          showNotification(error.message || "Failed to add category", "error");
+        } finally {
+          setButtonLoading(addBtn, false);
+        }
+      });
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", () => {
+        updateAuthUI();
+        loadCategories();
+      });
+    </script>
+  </body>
+</html>

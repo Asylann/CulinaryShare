@@ -1,10 +1,12 @@
 services:
-  app:
+  # Backend API service
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: culinaryshare-backend
     ports:
-      - "${PORT:-8080}:8080"
+      - "8080:8080"
     environment:
       - PORT=8080
       - MONGODB_ATLAS_URI=${MONGODB_ATLAS_URI}
@@ -16,6 +18,25 @@ services:
     dns:
       - 8.8.8.8
       - 8.8.4.4
+    networks:
+      - culinaryshare-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend service (nginx serving static files + proxy to backend)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: culinaryshare-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
     networks:
       - culinaryshare-network
 

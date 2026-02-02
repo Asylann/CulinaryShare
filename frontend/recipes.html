@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Browse all recipes on CulinaryShare. Filter by category and discover new dishes."
+    />
+    <title>All Recipes - CulinaryShare</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      .recipes-page {
+        padding-top: 100px;
+        min-height: 100vh;
+      }
+
+      .page-header {
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .filters-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+        padding: var(--spacing-lg);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .filter-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .filter-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: var(--spacing-xs);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .filter-select {
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-md);
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        color: var(--text-primary);
+        cursor: pointer;
+      }
+
+      .filter-select:focus {
+        border-color: var(--primary);
+      }
+
+      .search-input {
+        flex: 2;
+        min-width: 300px;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xl);
+      }
+
+      .pagination-btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .pagination-btn:hover,
+      .pagination-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+      }
+
+      .pagination-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .results-info {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-bottom: var(--spacing-md);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="container">
+        <a href="index.html" class="nav-brand">
+          <span class="icon">CS</span>
+          <span>CulinaryShare</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="recipes.html" class="active">Recipes</a>
+          <a href="categories.html">Categories</a>
+        </div>
+
+        <div class="nav-auth" id="nav-auth">
+          <div id="auth-buttons">
+            <a href="login.html" class="btn btn-ghost">Sign In</a>
+            <a href="register.html" class="btn btn-primary">Get Started</a>
+          </div>
+          <div id="user-menu" class="hidden">
+            <a href="create-recipe.html" class="btn btn-primary btn-sm">
+              <span>+</span> New Recipe
+            </a>
+            <a href="profile.html" class="nav-user">
+              <div class="nav-user-avatar" id="user-avatar">U</div>
+              <span id="user-name">User</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="recipes-page">
+      <div class="container">
+        <div class="page-header">
+          <h1>All Recipes</h1>
+          <p class="text-muted">
+            Discover delicious recipes from our community
+          </p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div class="filter-group search-input">
+            <label class="filter-label">Search</label>
+            <input
+              type="text"
+              id="search-input"
+              class="form-input"
+              placeholder="Search recipes..."
+            />
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Category</label>
+            <select id="category-filter" class="filter-select">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Sort By</label>
+            <select id="sort-filter" class="filter-select">
+              <option value="-createdAt">Newest First</option>
+              <option value="createdAt">Oldest First</option>
+              <option value="-averageRating">Highest Rated</option>
+              <option value="-reviewCount">Most Reviewed</option>
+              <option value="title">A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Results Info -->
+        <p class="results-info" id="results-info">Loading recipes...</p>
+
+        <!-- Recipe Grid -->
+        <div class="recipe-grid" id="recipes-grid">
+          <!-- Skeleton loaders -->
+          <div class="card">
+            <div class="card-image skeleton" style="height: 200px"></div>
+            <div class="card-content">
+              <div
+                class="skeleton"
+                style="height: 24px; width: 80%; margin-bottom: 10px"
+              ></div>
+              <div class="skeleton" style="height: 16px; width: 60%"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-image skeleton" style="height: 200px"></div>
+            <div class="card-content">
+              <div
+                class="skeleton"
+                style="height: 24px; width: 80%; margin-bottom: 10px"
+              ></div>
+              <div class="skeleton" style="height: 16px; width: 60%"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-image skeleton" style="height: 200px"></div>
+            <div class="card-content">
+              <div
+                class="skeleton"
+                style="height: 24px; width: 80%; margin-bottom: 10px"
+              ></div>
+              <div class="skeleton" style="height: 16px; width: 60%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination">
+          <!-- Will be populated by JS -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2026 CulinaryShare. NoSQL Final Project.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/utils.js"></script>
+    <script>
+      // State
+      let currentPage = 1;
+      let totalPages = 1;
+      let categories = [];
+
+      // DOM Elements
+      const recipesGrid = document.getElementById("recipes-grid");
+      const resultsInfo = document.getElementById("results-info");
+      const pagination = document.getElementById("pagination");
+      const searchInput = document.getElementById("search-input");
+      const categoryFilter = document.getElementById("category-filter");
+      const sortFilter = document.getElementById("sort-filter");
+      const authButtons = document.getElementById("auth-buttons");
+      const userMenu = document.getElementById("user-menu");
+      const userAvatar = document.getElementById("user-avatar");
+      const userName = document.getElementById("user-name");
+
+      // Update auth UI
+      function updateAuthUI() {
+        if (TokenManager.isLoggedIn()) {
+          const user = TokenManager.getUser();
+          authButtons.classList.add("hidden");
+          userMenu.classList.remove("hidden");
+          userAvatar.textContent = getInitials(user?.username || "U");
+          userName.textContent = user?.username || "User";
+        }
+      }
+
+      // Create recipe card HTML
+      function createRecipeCard(recipe) {
+        const categoryName = getCategoryName(recipe.categoryId);
+        return `
+        <a href="recipe.html?id=${recipe.id}" class="card">
+          <div class="card-image">
+            <img src="${getRecipeImage(recipe)}" alt="${recipe.title}">
+            <span class="card-badge">${categoryName}</span>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">${recipe.title}</h3>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: var(--spacing-md); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              ${recipe.description || "A delicious recipe waiting to be discovered."}
+            </p>
+            <div class="card-meta">
+              <div class="card-rating">
+                <span>${generateStars(recipe.averageRating || 0)}</span>
+                <span>${(recipe.averageRating || 0).toFixed(1)}</span>
+              </div>
+              <span class="card-meta-item">
+                 ${formatCookingTime(recipe.cookingTime || 30)}
+              </span>
+            </div>
+            <div class="card-footer">
+              <span style="font-size: 0.875rem; color: var(--text-muted);">
+                 ${recipe.servings || 4} servings
+              </span>
+              <span style="font-size: 0.875rem; color: var(--text-muted);">
+                 ${recipe.reviewCount || 0} reviews
+              </span>
+            </div>
+          </div>
+        </a>
+      `;
+      }
+
+      // Get category name by ID
+      function getCategoryName(categoryId) {
+        const category = categories.find((c) => c.id === categoryId);
+        return category ? category.name : "Recipe";
+      }
+
+      // Load categories
+      async function loadCategories() {
+        try {
+          const response = await CategoriesAPI.getAll();
+          categories = response.data || [];
+
+          categoryFilter.innerHTML = '<option value="">All Categories</option>';
+          categories.forEach((cat) => {
+            categoryFilter.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+          });
+
+          // Set initial category from URL
+          const params = getUrlParams();
+          if (params.category) {
+            categoryFilter.value = params.category;
+          }
+        } catch (error) {
+          console.error("Failed to load categories:", error);
+        }
+      }
+
+      // Load recipes
+      async function loadRecipes() {
+        const params = {
+          page: currentPage,
+          limit: 9,
+          sort: sortFilter.value,
+        };
+
+        const search = searchInput.value.trim();
+        if (search) {
+          params.search = search;
+        }
+
+        const category = categoryFilter.value;
+        if (category) {
+          params.categoryId = category;
+        }
+
+        try {
+          const response = await RecipesAPI.getAll(params);
+          const data = response.data || {};
+          const recipes = data.recipes || data || [];
+          totalPages = data.totalPages || 1;
+
+          if (recipes.length > 0) {
+            recipesGrid.innerHTML = recipes.map(createRecipeCard).join("");
+            resultsInfo.textContent = `Showing ${recipes.length} recipes${data.total ? ` of ${data.total}` : ""}`;
+          } else {
+            recipesGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <div class="empty-state-icon"></div>
+              <h3>No recipes found</h3>
+              <p>Try adjusting your filters or search terms.</p>
+            </div>
+          `;
+            resultsInfo.textContent = "No recipes found";
+          }
+
+          renderPagination();
+        } catch (error) {
+          console.error("Failed to load recipes:", error);
+          recipesGrid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-state-icon">!</div>
+            <h3>Failed to load recipes</h3>
+            <p>Please check if the backend is running.</p>
+          </div>
+        `;
+          resultsInfo.textContent = "Error loading recipes";
+        }
+      }
+
+      // Render pagination
+      function renderPagination() {
+        if (totalPages <= 1) {
+          pagination.innerHTML = "";
+          return;
+        }
+
+        let html = "";
+
+        // Previous button
+        html += `<button class="pagination-btn" ${currentPage === 1 ? "disabled" : ""} data-page="${currentPage - 1}">← Prev</button>`;
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+          if (
+            i === 1 ||
+            i === totalPages ||
+            (i >= currentPage - 1 && i <= currentPage + 1)
+          ) {
+            html += `<button class="pagination-btn ${i === currentPage ? "active" : ""}" data-page="${i}">${i}</button>`;
+          } else if (i === currentPage - 2 || i === currentPage + 2) {
+            html += `<span style="padding: 0 var(--spacing-sm); color: var(--text-muted);">...</span>`;
+          }
+        }
+
+        // Next button
+        html += `<button class="pagination-btn" ${currentPage === totalPages ? "disabled" : ""} data-page="${currentPage + 1}">Next →</button>`;
+
+        pagination.innerHTML = html;
+
+        // Add event listeners
+        pagination.querySelectorAll(".pagination-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const page = parseInt(btn.dataset.page);
+            if (
+              page &&
+              page !== currentPage &&
+              page >= 1 &&
+              page <= totalPages
+            ) {
+              currentPage = page;
+              loadRecipes();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          });
+        });
+      }
+
+      // Debounced search
+      const debouncedSearch = debounce(() => {
+        currentPage = 1;
+        loadRecipes();
+      }, 300);
+
+      // Event listeners
+      searchInput.addEventListener("input", debouncedSearch);
+
+      categoryFilter.addEventListener("change", () => {
+        currentPage = 1;
+        loadRecipes();
+      });
+
+      sortFilter.addEventListener("change", () => {
+        currentPage = 1;
+        loadRecipes();
+      });
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", async () => {
+        updateAuthUI();
+        await loadCategories();
+        loadRecipes();
+      });
+    </script>
+  </body>
+</html>
