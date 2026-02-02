@@ -4,10 +4,10 @@ A full-stack recipe management web application built with Go, Gin framework, Mon
 
 ## 👥 Team Information
 
-| Name | Student ID | Contribution |
-|------|------------|--------------|
-| Student 1 | [ID] | Auth, User handlers, JWT middleware, Tests, Frontend Auth |
-| Student 2 | [ID] | Recipe, Category, Analytics handlers, Documentation, Frontend UI |
+| Name | Contribution |
+|------|------------|
+| Nurassyl  Orazbek | Auth, User handlers, JWT middleware, Tests, Frontend Auth |
+| Asylan Usen | Recipe, Category, Analytics handlers, Documentation, Frontend UI |
 
 ## 📋 Project Overview
 
